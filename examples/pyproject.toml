@@ -1,0 +1,14 @@
+[project]
+name = "examples"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "mlx>=0.29.3",
+    "pytest>=8.4.2",
+    "tinygpt",
+]
+
+[tool.uv.sources]
+tinygpt = { workspace = true }

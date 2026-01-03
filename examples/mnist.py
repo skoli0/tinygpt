@@ -4,6 +4,7 @@ import time
 import pickle
 import struct
 from urllib import request
+from urllib.error import HTTPError, URLError
 from itertools import batched
 
 from tinygpt.tensor import Tensor 
@@ -14,7 +15,12 @@ from tinygpt.losses import CrossEntropyLoss
 
 
 
-MNIST_URL = "http://yann.lecun.com/exdb/mnist/"
+# MNIST mirrors. The original Yann LeCun host is occasionally unavailable / returns 404.
+MNIST_URLS = [
+    "https://yann.lecun.com/exdb/mnist/",
+    "https://storage.googleapis.com/cvdf-datasets/mnist/",
+    "https://ossci-datasets.s3.amazonaws.com/mnist/",
+]
 MNIST_FILES = [
     ("training_images", "train-images-idx3-ubyte.gz"),
     ("test_images", "t10k-images-idx3-ubyte.gz"),
@@ -23,9 +29,27 @@ MNIST_FILES = [
 ]
 
 
-def download_file(url, save_path):
-    print(f"Downloading file {os.path.basename(save_path)}...")
-    request.urlretrieve(url, save_path)
+def download_file(urls, save_path):
+    """
+    Download a file from the first working URL in `urls`.
+    Uses a User-Agent header to avoid some hosts rejecting default urllib clients.
+    """
+    filename = os.path.basename(save_path)
+    last_err: Exception | None = None
+
+    for base_url in urls:
+        url = base_url + filename
+        print(f"Downloading file {filename} from {base_url} ...")
+        try:
+            req = request.Request(url, headers={"User-Agent": "tinygpt-mnist-downloader/1.0"})
+            with request.urlopen(req) as resp, open(save_path, "wb") as f:
+                f.write(resp.read())
+            return
+        except (HTTPError, URLError, OSError) as e:
+            last_err = e
+            continue
+
+    raise RuntimeError(f"Failed to download {filename} from all mirrors") from last_err
 
 
 def extract_images(file_path):
@@ -52,7 +76,7 @@ def extract_labels(file_path):
         return [[label] for label in labels]
 
 
-def download_mnist_dataset(save_dir='/tmp', base_url=MNIST_URL, filename="mnist.pkl"):
+def download_mnist_dataset(save_dir="/tmp", base_urls=MNIST_URLS, filename="mnist.pkl"):
     dataset_path = os.path.join(save_dir, filename)
     if os.path.exists(dataset_path):
         print("MNIST dataset already downloaded.")
@@ -60,7 +84,7 @@ def download_mnist_dataset(save_dir='/tmp', base_url=MNIST_URL, filename="mnist.
         mnist_data = {}
         for name, file in MNIST_FILES:
             file_path = os.path.join(save_dir, file)
-            download_file(base_url + file, file_path)
+            download_file(base_urls, file_path)
             if "images" in name:
                 mnist_data[name] = extract_images(file_path)
             else:
