@@ -1,0 +1,32 @@
+artifact_path: /Users/skoli/Development/Projects/PoC/tinygpt/mlruns/1/models/m-415c5ea74c83439ba26096d267b3f0ad/artifacts
+flavors:
+  python_function:
+    artifacts:
+      checkpoint:
+        path: artifacts/gpt_mlx_weights.npz
+        uri: examples/gpt_mlx_weights.npz
+      config:
+        path: artifacts/config.json
+        uri: /Users/skoli/Development/Projects/PoC/tinygpt/artifacts/mlflow_model/config.json
+      tokenizer_model:
+        path: artifacts/tokenizer.model
+        uri: /Users/skoli/Development/Projects/PoC/tinygpt/examples/tokenizer.model
+      tokenizer_vocab:
+        path: artifacts/tokenizer.vocab
+        uri: /Users/skoli/Development/Projects/PoC/tinygpt/examples/tokenizer.vocab
+    cloudpickle_version: 3.1.2
+    code: code
+    env:
+      conda: conda.yaml
+      virtualenv: python_env.yaml
+    loader_module: mlflow.pyfunc.model
+    python_model: python_model.pkl
+    python_version: 3.12.13
+    streamable: false
+mlflow_version: 3.10.1
+model_id: m-415c5ea74c83439ba26096d267b3f0ad
+model_size_bytes: 5875100
+model_uuid: m-415c5ea74c83439ba26096d267b3f0ad
+prompts: null
+run_id: 424e542e806a4779a930a3300b3653a7
+utc_time_created: '2026-03-30 10:50:05.302679'

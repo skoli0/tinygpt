@@ -1,0 +1,12 @@
+{
+  "vocab_size": 1024,
+  "max_seq_length": 64,
+  "gpt_config": {
+    "vocab_size": 1024,
+    "max_seq_length": 64,
+    "num_layers": 6,
+    "num_heads": 4,
+    "embedding_dim": 128,
+    "mlp_hidden_mult": 4
+  }
+}

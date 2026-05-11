@@ -11,7 +11,7 @@ dataset_info_file = 'dataset.json'
 train_file = 'train.txt'
 val_file = 'val.txt'
 metadata_file = 'metadata.json'
-train_ratio = 0.9
+train_ratio = 0.8
 val_ratio = 1.0 - train_ratio
 
 
